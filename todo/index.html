@@ -14,7 +14,7 @@
     <title>Tiny Wins Todo</title>
     <link rel="preload" href="/todo/assets/todo-desk.png" as="image">
     <link rel="stylesheet" href="/todo/styles.css">
-    <script src="/todo/script.js?v=todo-list-2026-05-27-gym3" defer></script>
+    <script src="/todo/script.js?v=todo-list-2026-05-27-fun3" defer></script>
   </head>
   <body>
     <main class="app">
@@ -77,7 +77,31 @@
           <span id="progress-bar"></span>
         </div>
 
-        <ul class="task-list" id="task-list" aria-label="Tasks"></ul>
+        <p class="encouragement-line" id="encouragement-line" aria-live="polite" role="status" hidden></p>
+
+        <div class="fun-shelf">
+          <div class="badge-rack" id="badge-rack" aria-label="Milestone stickers"></div>
+          <div class="compliment-box">
+            <button class="compliment-button" id="compliment-button" type="button">
+              Compliment Jenna
+            </button>
+            <p id="compliment-line" aria-live="polite">Certified excellent human.</p>
+          </div>
+        </div>
+
+        <div class="task-section__header">
+          <h2 id="active-title">Still in progress</h2>
+          <span id="active-count">0 to go</span>
+        </div>
+        <ul class="task-list" id="task-list" aria-labelledby="active-title"></ul>
+
+        <section class="done-section" id="done-section" aria-labelledby="done-title">
+          <div class="done-section__header">
+            <h2 id="done-title">Done and dusted</h2>
+            <span id="done-count">0 tucked away</span>
+          </div>
+          <ul class="task-list task-list--done" id="done-list" aria-label="Completed tasks"></ul>
+        </section>
       </section>
     </main>
     <div class="effect-layer" id="effect-layer" aria-hidden="true"></div>
