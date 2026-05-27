@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A simple UK guide to the next meteor shower, with peak times, viewing tips, and a live countdown."
+    >
+    <meta name="theme-color" content="#081629">
+    <meta property="og:title" content="Next Meteor Shower in the UK">
+    <meta
+      property="og:description"
+      content="Eta Aquariids peak between midnight and dawn on 6 May 2026 in the UK."
+    >
+    <meta property="og:image" content="assets/meteor-hero.png">
+    <title>Next Meteor Shower in the UK</title>
+    <link rel="preload" href="assets/meteor-hero.png" as="image">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <img
+          class="hero__image"
+          src="assets/meteor-hero.png"
+          alt="Illustration of bright meteors streaking over a night sky above rolling UK countryside."
+        >
+        <div class="hero__shade"></div>
+        <div class="sky-bursts" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="hero__content">
+          <p class="eyebrow">UK skywatch</p>
+          <h1 id="page-title">Next Meteor Shower</h1>
+          <p class="hero__copy">
+            The Eta Aquariids are the next shower to watch from the UK, with the
+            peak window landing between midnight and dawn on Wednesday 6 May 2026.
+          </p>
+
+          <div class="countdown" aria-live="polite">
+            <span class="countdown__label" id="countdown-label">Peak window opens in</span>
+            <div class="countdown__grid" id="countdown-grid">
+              <span><strong id="days">--</strong><small>days</small></span>
+              <span><strong id="hours">--</strong><small>hours</small></span>
+              <span><strong id="minutes">--</strong><small>mins</small></span>
+              <span><strong id="seconds">--</strong><small>secs</small></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quicklook" aria-label="Meteor shower details">
+        <div class="quicklook__inner">
+          <article class="info-card info-card--wide">
+            <span class="info-card__kicker">What to look for</span>
+            <h2>Eta Aquariids</h2>
+            <p>
+              Fast meteors from debris left by Halley's Comet. In the UK they sit low
+              in the eastern sky before dawn, so a dark horizon matters.
+            </p>
+          </article>
+
+          <article class="info-card">
+            <span class="info-card__kicker">Best UK window</span>
+            <h2>00:00-05:00 BST</h2>
+            <p>Wednesday 6 May 2026. More meteors are likely in the early hours.</p>
+          </article>
+
+          <article class="info-card">
+            <span class="info-card__kicker">Active dates</span>
+            <h2>19 Apr-28 May</h2>
+            <p>The shower has a broad active period, with useful rates around the peak week.</p>
+          </article>
+
+          <article class="info-card">
+            <span class="info-card__kicker">Visibility note</span>
+            <h2>Moonlit skies</h2>
+            <p>A bright waning gibbous Moon may wash out fainter streaks at peak.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="planner" aria-labelledby="planner-title">
+        <div class="section-heading">
+          <p class="eyebrow">Tiny mission plan</p>
+          <h2 id="planner-title">Make the most of it</h2>
+        </div>
+
+        <div class="timeline">
+          <article class="timeline__item">
+            <span class="timeline__time">Before midnight</span>
+            <h3>Pick a dark eastern view</h3>
+            <p>Choose somewhere safe, away from street lights, with as little horizon clutter as possible.</p>
+          </article>
+          <article class="timeline__item">
+            <span class="timeline__time">00:00 BST</span>
+            <h3>The peak window opens</h3>
+            <p>The Moon rises soon after midnight, so early darkness may help before moonlight gets stronger.</p>
+          </article>
+          <article class="timeline__item">
+            <span class="timeline__time">Pre-dawn</span>
+            <h3>Watch low in the east</h3>
+            <p>Give your eyes 20 minutes to adjust. No telescope needed: a wide, patient view is better.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="status-band" aria-label="Live status">
+        <div>
+          <span class="status-band__label">UK time now</span>
+          <strong id="uk-time">--</strong>
+        </div>
+        <div>
+          <span class="status-band__label">Status</span>
+          <strong id="event-status">Calculating...</strong>
+        </div>
+      </section>
+
+      <section class="next-up" aria-labelledby="next-up-title">
+        <div class="section-heading">
+          <p class="eyebrow">After this</p>
+          <h2 id="next-up-title">Another date for the diary</h2>
+        </div>
+        <article class="info-card next-up__card">
+          <span class="info-card__kicker">Perseids</span>
+          <h2>12-13 Aug 2026</h2>
+          <p>
+            A stronger Northern Hemisphere favourite, and 2026 has a new Moon at the peak.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Data checked 1 May 2026. Sources:
+        <a href="https://www.rmg.co.uk/stories/space-astronomy/eta-aquariid-meteor-shower-2026-when-where-see-it-uk">Royal Museums Greenwich</a>,
+        <a href="https://www.amsmeteors.org/meteor-showers/meteor-shower-calendar/">American Meteor Society</a>,
+        <a href="https://www.timeanddate.com/news/astronomy/eta-aquarid-meteor-shower-2026">timeanddate.com</a>.
+      </p>
+      <p class="footer-note">
+        Astronomers usually call this a meteor shower, even when it gets nicknamed an asteroid shower.
+      </p>
+    </footer>
+  </body>
+</html>

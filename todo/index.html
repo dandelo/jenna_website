@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A playful todo list for party prep and small wins."
+    >
+    <meta name="theme-color" content="#92ccea">
+    <meta property="og:title" content="Tiny Wins Todo">
+    <meta property="og:description" content="A whimsical checklist for today's little missions.">
+    <meta property="og:image" content="https://happybirthdayjenna.co.uk/todo/assets/todo-desk.png">
+    <title>Tiny Wins Todo</title>
+    <link rel="preload" href="/todo/assets/todo-desk.png" as="image">
+    <link rel="stylesheet" href="/todo/styles.css">
+    <script src="/todo/script.js?v=todo-list-2026-05-27-gym3" defer></script>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero" aria-labelledby="page-title">
+        <img
+          class="hero__image"
+          src="/todo/assets/todo-desk.png"
+          alt="Illustration of a colourful desktop with sticky notes, pencil, plants, and a blank checklist."
+        >
+        <div class="hero__content">
+          <p class="eyebrow">Tiny missions</p>
+          <h1 id="page-title">Tiny Wins Todo</h1>
+          <p class="hero__copy">
+            A cheerful little list for getting the good stuff done.
+          </p>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Todo list">
+        <div class="controls" aria-label="List controls">
+          <label class="range-control" for="worry-level">
+            <span>Worry Level</span>
+            <output id="worry-value" for="worry-level">3</output>
+            <input id="worry-level" type="range" min="1" max="5" value="3">
+          </label>
+
+          <label class="range-control" for="gym-visits">
+            <span>Gym Visits</span>
+            <output id="gym-value" for="gym-visits">0</output>
+            <input id="gym-visits" type="range" min="0" max="3" value="0">
+          </label>
+
+          <button class="reset-button" id="reset-button" type="button">Reset</button>
+        </div>
+
+        <div class="toolbar">
+          <form class="add-form" id="add-form">
+            <label class="sr-only" for="new-task">New task</label>
+            <input
+              id="new-task"
+              name="task"
+              type="text"
+              autocomplete="off"
+              maxlength="90"
+              placeholder="Add a tiny mission"
+            >
+            <button class="icon-button icon-button--add" type="submit" aria-label="Add task">
+              <span aria-hidden="true">+</span>
+            </button>
+          </form>
+
+          <div class="summary" aria-live="polite">
+            <span id="summary-count">0 of 0 done</span>
+            <span class="summary__dot" aria-hidden="true"></span>
+            <span id="summary-mood">Ready</span>
+          </div>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <span id="progress-bar"></span>
+        </div>
+
+        <ul class="task-list" id="task-list" aria-label="Tasks"></ul>
+      </section>
+    </main>
+    <div class="effect-layer" id="effect-layer" aria-hidden="true"></div>
+    <p class="sr-only" id="effect-status" aria-live="polite"></p>
+  </body>
+</html>

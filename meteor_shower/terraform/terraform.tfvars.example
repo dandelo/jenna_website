@@ -1,0 +1,14 @@
+aws_region  = "eu-west-2"
+bucket_name = "happybirthdayjenna.co.uk"
+domain_name = "happybirthdayjenna.co.uk"
+
+# Optional extra aliases. Add this only if the hosted zone should also route
+# this name to the same CloudFront distribution.
+# alternate_domain_names = ["www.happybirthdayjenna.co.uk"]
+
+# Set this to false if the bucket already exists in the target AWS account.
+create_bucket = true
+
+# The default looks up the public hosted zone for domain_name in this AWS
+# account. Set route53_zone_id only if you have multiple matching zones.
+# route53_zone_id = "Z1234567890ABC"
