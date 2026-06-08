@@ -812,8 +812,8 @@ h1 {
   }
 
   100% {
-    opacity: 0;
-    transform: translate(-50%, -18px) rotate(2deg) scale(0.9);
+    opacity: 1;
+    transform: translate(-50%, 0) rotate(0deg) scale(1);
   }
 }
 

@@ -1,23 +1,19 @@
 const initialTasks = [
-  "Actually collect bike 🙌",
-  "Chill water for gym",
-  "Watch the sheep detectives",
-  "make a list of social groups to join/look into",
+  "Make a list of social groups to join/look into",
   "Have an ice cream",
   "Play some more game with Dylan",
   "Doing something lovely for Fran",
   "Acknowledge at least one super smart thing you do this week, and don't call it being lazy",
-  "Try some meditation before bed",
-  "...or buy a new retainer",
-  "Have a delicious meal at sunny stores",
-  "Eat some \"marry me butter beans\"",
+  "Try some mindfulness exercises",
+  "Buy a new retainer",
   "Talk to Liz, or someone, about what role to move into in the future and what the steps are to get there",
-  "Say \"Hey girlie squirly\" to Lola",
-  "Remember that Jenna is Kind, Sweet, Self-Aware, Funny and super resilient",
+  "Complete a rubik's cube (no cheating!)",
+  "Eat tuna steak and rhubarb frangipane",
+  "At least once, when you notice yourself worrying about something, take a moment to ask 'is this actually a problem right now?' and if not, try to let it go",
 ];
 
 const cookieName = "tinyWinsTodo";
-const listVersion = "jenna-list-2026-05-27-mural";
+const listVersion = "jenna-list-2026-06-08-mural";
 const cookieMaxAge = 60 * 60 * 24 * 180;
 const maxPersistedTasks = 30;
 const defaultLevels = {
@@ -62,6 +58,15 @@ const compliments = [
   "Jenna is kind, funny, sharp, and suspiciously good at being lovely.",
   "Jenna has premium sparkle settings enabled.",
   "Jenna could make a Tuesday feel like a tiny festival.",
+  "Jenna has elite cozy-chaos management skills.",
+  "Jenna's ideas arrive with excellent lighting and snacks.",
+  "Jenna is operating at highly advanced lovely-person levels.",
+  "Jenna makes competence look suspiciously charming.",
+  "Jenna has a five-star brain and a very kind operating system.",
+  "Jenna has the exact right amount of sparkle and nonsense.",
+  "Jenna is quietly excellent in several highly specific ways.",
+  "Jenna brings top-tier wit with a generous side of warmth.",
+  "Jenna's presence improves the room's general forecast.",
 ];
 const encouragements = [
   "Tiny victory logged.",
@@ -373,7 +378,7 @@ function showEncouragement() {
     els.encouragementLine.classList.remove("is-visible", "is-popping");
     els.encouragementLine.hidden = true;
     els.encouragementLine.textContent = "";
-  }, 2200);
+  }, 3000);
 }
 
 function createEffectPiece(className, properties = {}) {
