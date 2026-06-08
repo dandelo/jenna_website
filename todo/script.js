@@ -3,7 +3,7 @@ const initialTasks = [
   "Have an ice cream",
   "Play some more game with Dylan",
   "Doing something lovely for Fran",
-  "Acknowledge at least one super smart thing you do this week, and don't call it being lazy",
+  "Acknowledge at least two super smart things you do this week, and don't call it being lazy",
   "Try some mindfulness exercises",
   "Buy a new retainer",
   "Talk to Liz, or someone, about what role to move into in the future and what the steps are to get there",
@@ -79,6 +79,25 @@ const encouragements = [
   "A very respectable little triumph.",
   "Progress has entered the chat.",
   "Done is done, and done is excellent.",
+];
+const randomTaskIdeas = [
+  "Write down one thing that felt easier than expected",
+  "Take five slow breaths and unclench your shoulders",
+  "Drink a glass of water somewhere you can see daylight",
+  "Text someone a small kind thought",
+  "Name one thing your future self will be glad you did",
+  "Step outside for two minutes and notice three real colours",
+  "Make a tiny plan for tomorrow that starts kindly",
+  "Tidy one surface just enough to make it calmer",
+  "Put on a song that makes your brain feel lighter",
+  "Write one sentence about what you need, without judging it",
+  "Do one gentle stretch and call it a win",
+  "Notice one worry, then write the smallest next step",
+  "Make a cup of tea and do absolutely nothing while it brews",
+  "Find one small thing to look forward to this week",
+  "Say something kind to yourself that you would say to a friend",
+  "Spend ten minutes on a task that has been quietly bothering you",
+  "Open a window or step outside and take a proper breath",
 ];
 
 function fallbackId(index = 0) {
@@ -202,6 +221,7 @@ const els = {
   input: document.querySelector("#new-task"),
   list: document.querySelector("#task-list"),
   progress: document.querySelector("#progress-bar"),
+  randomTaskButton: document.querySelector("#random-task-button"),
   resetButton: document.querySelector("#reset-button"),
   summaryCount: document.querySelector("#summary-count"),
   summaryMood: document.querySelector("#summary-mood"),
@@ -344,6 +364,34 @@ function moveTaskToGroupEnd(sourceId, doneState) {
 
 function randomBetween(min, max) {
   return Math.random() * (max - min) + min;
+}
+
+function addTask(title) {
+  const cleanedTitle = cleanTitle(title);
+  if (!cleanedTitle) return false;
+
+  tasks = [
+    {
+      id: createId(tasks.length),
+      title: cleanedTitle,
+      done: false,
+    },
+    ...tasks,
+  ];
+
+  saveState();
+  render();
+  return true;
+}
+
+function randomTaskTitle() {
+  const existingTitles = new Set(tasks.map((task) => task.title.toLocaleLowerCase("en-GB")));
+  const unusedIdeas = randomTaskIdeas.filter(
+    (title) => !existingTitles.has(title.toLocaleLowerCase("en-GB")),
+  );
+  const source = unusedIdeas.length > 0 ? unusedIdeas : randomTaskIdeas;
+
+  return source[Math.floor(randomBetween(0, source.length))];
 }
 
 function showCompliment() {
@@ -676,18 +724,11 @@ els.form.addEventListener("submit", (event) => {
     return;
   }
 
-  tasks = [
-    {
-      id: createId(tasks.length),
-      title,
-      done: false,
-    },
-    ...tasks,
-  ];
+  if (addTask(title)) els.input.value = "";
+});
 
-  els.input.value = "";
-  saveState();
-  render();
+els.randomTaskButton.addEventListener("click", () => {
+  addTask(randomTaskTitle());
 });
 
 els.worrySlider.addEventListener("input", () => {

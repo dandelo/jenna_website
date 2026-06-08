@@ -189,7 +189,7 @@ h1 {
 
 .toolbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) 178px auto;
   gap: 14px;
   align-items: center;
   margin-bottom: 18px;
@@ -252,6 +252,33 @@ h1 {
 .icon-button--add {
   background: var(--yellow);
   color: #3c273d;
+}
+
+.random-task-button {
+  min-height: 76px;
+  padding: 0 18px;
+  border: 1px solid rgba(78, 131, 161, 0.22);
+  border-radius: 8px;
+  color: #2f5267;
+  background: linear-gradient(135deg, rgba(223, 242, 251, 0.96), rgba(255, 248, 251, 0.9));
+  box-shadow: var(--shadow);
+  font-weight: 950;
+  line-height: 1.18;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.random-task-button:hover {
+  border-color: rgba(78, 131, 161, 0.42);
+  background: linear-gradient(135deg, #dff2fb, #fff8fb);
+  transform: translateY(-1px);
+}
+
+.random-task-button:focus-visible {
+  outline: 3px solid rgba(78, 131, 161, 0.28);
+  outline-offset: 3px;
 }
 
 .icon-button--remove {
@@ -1014,6 +1041,10 @@ h1 {
 
   .add-form {
     grid-template-columns: minmax(0, 1fr) 48px;
+  }
+
+  .random-task-button {
+    min-height: 56px;
   }
 
   .add-form input,
