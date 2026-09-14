@@ -24,8 +24,9 @@ Recommended content types:
 - `.js`: `application/javascript`
 - `.png`: `image/png`
 
-Data checked on 1 May 2026 from Royal Museums Greenwich, American Meteor
-Society, and timeanddate.com.
+Data checked on 17 June 2026 from the American Meteor Society and Space.com.
+The app currently features the Perseids as the next strong UK-friendly shower,
+with a note about the weaker late-July showers.
 
 ## Terraform
 

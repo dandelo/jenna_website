@@ -1,9 +1,9 @@
 const event = {
-  name: "Eta Aquariids",
-  activeStart: new Date("2026-04-19T00:00:00+01:00"),
-  peakStart: new Date("2026-05-06T00:00:00+01:00"),
-  peakEnd: new Date("2026-05-06T05:00:00+01:00"),
-  activeEnd: new Date("2026-05-28T23:59:59+01:00"),
+  name: "Perseids",
+  activeStart: new Date("2026-07-17T00:00:00+01:00"),
+  peakStart: new Date("2026-08-12T22:30:00+01:00"),
+  peakEnd: new Date("2026-08-13T05:00:00+01:00"),
+  activeEnd: new Date("2026-08-24T23:59:59+01:00"),
 };
 
 const els = {
@@ -52,9 +52,16 @@ function update() {
   const now = new Date();
   els.ukTime.textContent = ukTimeFormatter.format(now);
 
+  if (now < event.activeStart) {
+    els.label.textContent = "Best window opens in";
+    els.status.textContent = "Perseid activity starts 17 Jul";
+    renderDuration(splitDuration(event.peakStart - now));
+    return;
+  }
+
   if (now < event.peakStart) {
-    els.label.textContent = "Peak window opens in";
-    els.status.textContent = "Active now, peak still ahead";
+    els.label.textContent = "Best window opens in";
+    els.status.textContent = "Active now, best night still ahead";
     renderDuration(splitDuration(event.peakStart - now));
     return;
   }
@@ -74,7 +81,7 @@ function update() {
   }
 
   els.label.textContent = "This shower peaked";
-  els.status.textContent = "Next major UK favourite: Perseids, 12-13 Aug 2026";
+  els.status.textContent = "Next big UK target: Geminids, 13-14 Dec 2026";
   renderDuration({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 }
 
