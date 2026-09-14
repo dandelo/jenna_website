@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A celebratory countdown and daily photo scrapbook for Jenna's new home completion day."
+    >
+    <meta name="theme-color" content="#65c7c1">
+    <meta property="og:title" content="Jenna's Home Countdown">
+    <meta property="og:description" content="Counting down to completion day with daily new-home surprises.">
+    <meta property="og:image" content="https://happybirthdayjenna.co.uk/home-countdown/assets/listing/photo-17.jpeg">
+    <title>Jenna's Home Countdown</title>
+    <link rel="preload" href="/home-countdown/assets/listing/photo-17.jpeg" as="image">
+    <link rel="preload" href="/home-countdown/assets/listing/photo-02.jpeg" as="image">
+    <link rel="stylesheet" href="/home-countdown/styles.css?v=home-countdown-2026-08-05">
+    <script src="/home-countdown/script.js?v=home-countdown-2026-08-05" defer></script>
+  </head>
+  <body>
+    <main class="app">
+      <section class="pinboard" aria-labelledby="page-title">
+        <div class="pinboard__texture" aria-hidden="true"></div>
+        <div class="loose-photo loose-photo--one" aria-hidden="true">
+          <img src="/home-countdown/assets/listing/photo-01.jpeg" alt="">
+        </div>
+        <div class="loose-photo loose-photo--two" aria-hidden="true">
+          <img src="/home-countdown/assets/listing/photo-11.jpeg" alt="">
+        </div>
+
+        <div class="board-layout">
+          <section class="countdown-note" aria-labelledby="page-title">
+            <div class="note-tape note-tape--left" aria-hidden="true"></div>
+            <div class="note-tape note-tape--right" aria-hidden="true"></div>
+
+            <p class="eyebrow">Completion Friday</p>
+            <h1 id="page-title">Jenna's Home Countdown</h1>
+            <p class="target-line" id="target-line">Friday 14 August 2026</p>
+
+            <div class="timer" aria-live="polite" aria-label="Countdown to Jenna owning her new home">
+              <span class="timer__label" id="timer-label">Keys in</span>
+              <div class="timer__grid">
+                <span class="timer__unit">
+                  <strong id="days">--</strong>
+                  <small id="days-label">days</small>
+                </span>
+                <span class="timer__unit">
+                  <strong id="hours">--</strong>
+                  <small>hours</small>
+                </span>
+                <span class="timer__unit">
+                  <strong id="minutes">--</strong>
+                  <small>minutes</small>
+                </span>
+                <span class="timer__unit">
+                  <strong id="seconds">--</strong>
+                  <small>seconds</small>
+                </span>
+              </div>
+            </div>
+
+            <div class="note-actions">
+              <button class="primary-button" id="open-today" type="button">
+                Open today's pocket
+              </button>
+              <span class="status-pill" id="countdown-status">Calculating</span>
+            </div>
+          </section>
+
+          <section class="today-note" aria-labelledby="today-title">
+            <div class="photo-frame" id="featured-frame">
+              <div class="photo-tape" aria-hidden="true"></div>
+              <img
+                id="featured-image"
+                src="/home-countdown/assets/listing/photo-17.jpeg"
+                alt="Exterior of Jenna's new home from the listing."
+              >
+            </div>
+            <div class="today-copy">
+              <p class="eyebrow" id="featured-kicker">Today's treat</p>
+              <h2 id="today-title">A real first glimpse</h2>
+              <p id="featured-note">The building is not just an idea anymore. It has windows, a path, and a Friday waiting for it.</p>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="pockets" aria-labelledby="pockets-title">
+        <div class="section-heading">
+          <p class="eyebrow">Daily pockets</p>
+          <h2 id="pockets-title">New-home countdown treats</h2>
+          <p id="pocket-status" aria-live="polite">Open the latest unlocked pocket.</p>
+        </div>
+        <div class="pocket-grid" id="pocket-grid"></div>
+      </section>
+
+      <section class="scrap-row" aria-label="New home details">
+        <figure class="scrap-photo">
+          <img src="/home-countdown/assets/listing/floorplan.jpeg" alt="Floorplan from the listing.">
+          <figcaption>Kitchen, lounge, bedroom, bathroom, hall: officially a whole home.</figcaption>
+        </figure>
+        <div class="completion-strip" aria-label="Completion milestones">
+          <span>Offer</span>
+          <span>Solicitors</span>
+          <span>Exchange</span>
+          <span class="completion-strip__active">Keys</span>
+        </div>
+      </section>
+    </main>
+
+    <div class="confetti-layer" id="confetti-layer" aria-hidden="true"></div>
+    <p class="sr-only" id="effect-status" aria-live="polite"></p>
+  </body>
+</html>
