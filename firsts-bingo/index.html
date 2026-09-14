@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A fridge-magnet bingo card of Jenna's firsts after moving into her new home."
+    >
+    <meta name="theme-color" content="#f3f0e9">
+    <meta property="og:title" content="Home Firsts Bingo">
+    <meta property="og:description" content="A new-home bingo card for the first cup of tea, first movie night, and every little milestone after keys.">
+    <meta property="og:image" content="https://happybirthdayjenna.co.uk/firsts-bingo/assets/house-photo.jpeg">
+    <title>Home Firsts Bingo</title>
+    <link rel="preload" href="/firsts-bingo/assets/house-photo.jpeg" as="image">
+    <link rel="stylesheet" href="/firsts-bingo/styles.css?v=home-firsts-bingo-2026-08-10-full-house">
+    <script src="/firsts-bingo/script.js?v=home-firsts-bingo-2026-08-10-full-house" defer></script>
+  </head>
+  <body>
+    <main class="app">
+      <section class="fridge-scene" aria-labelledby="page-title">
+        <span class="fridge-handle" aria-hidden="true"></span>
+
+        <header class="fridge-header">
+          <div class="title-wrap">
+            <span class="burst burst--left" aria-hidden="true"></span>
+            <div>
+              <p class="eyebrow">Jenna's new home</p>
+              <h1 id="page-title">Home Firsts Bingo</h1>
+            </div>
+            <span class="burst burst--right" aria-hidden="true"></span>
+          </div>
+
+          <div class="header-magnets" aria-label="Bingo controls">
+            <span class="path-magnet">/firsts-bingo</span>
+            <output class="score-magnet" id="score-magnet" aria-live="polite">0 of 25</output>
+            <button class="control-magnet control-magnet--teal" id="palette-button" type="button" aria-label="Shuffle tile colours" title="Shuffle tile colours">
+              <span aria-hidden="true">↔</span>
+            </button>
+            <button class="control-magnet control-magnet--yellow" id="reset-button" type="button" aria-label="Reset board" title="Reset board">
+              <span aria-hidden="true">↻</span>
+            </button>
+            <button class="control-magnet control-magnet--navy" id="share-button" type="button" aria-label="Copy link" title="Copy link">
+              <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="fridge-layout">
+          <aside class="left-props" aria-label="Home photo">
+            <span class="heart-magnet" aria-hidden="true"></span>
+            <figure class="photo-magnet">
+              <span class="round-magnet" aria-hidden="true"></span>
+              <img
+                src="/firsts-bingo/assets/house-photo.jpeg"
+                alt="Exterior of Jenna's new home from the listing."
+              >
+              <figcaption>First glimpse, now fridge official.</figcaption>
+            </figure>
+
+            <div class="sticky-note" aria-label="Good things start at home">
+              <p>Good things start at home</p>
+              <span aria-hidden="true">♡</span>
+            </div>
+          </aside>
+
+          <section class="board-zone" aria-label="Home firsts bingo card">
+            <div class="bingo-board" id="bingo-board"></div>
+            <p class="status-line" id="status-line" aria-live="polite">No firsts checked off yet.</p>
+          </section>
+
+          <aside class="right-props" aria-label="Moving notes">
+            <div class="plant-prop" aria-hidden="true">
+              <span></span>
+            </div>
+
+            <section class="clipboard-note" aria-labelledby="checklist-title">
+              <span class="clip" aria-hidden="true"></span>
+              <h2 id="checklist-title">Moving checklist</h2>
+              <ul>
+                <li class="is-done">Change address</li>
+                <li class="is-done">Utilities sorted</li>
+                <li class="is-done">Internet connected</li>
+                <li>Keys collected</li>
+                <li>Essentials box</li>
+                <li>Explore local shops</li>
+              </ul>
+              <span class="note-heart" aria-hidden="true">♥</span>
+            </section>
+
+            <div class="keyring-prop" aria-hidden="true">
+              <span class="ring"></span>
+              <span class="key key--one"></span>
+              <span class="key key--two"></span>
+              <span class="home-tag"></span>
+            </div>
+
+            <div class="pen-prop" aria-hidden="true"></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <div class="celebration-layer" id="celebration-layer" aria-hidden="true"></div>
+    <div
+      class="full-house-modal"
+      id="full-house-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="full-house-title"
+      hidden
+    >
+      <button class="full-house-modal__backdrop" type="button" data-full-house-close aria-label="Close celebration"></button>
+      <section class="full-house-card" aria-describedby="full-house-copy">
+        <button class="full-house-close" type="button" data-full-house-close aria-label="Close celebration">×</button>
+        <div class="full-house-badge" aria-hidden="true">25/25</div>
+        <p class="full-house-kicker">Bingo complete</p>
+        <h2 id="full-house-title">Full house? More like full home.</h2>
+        <p id="full-house-copy">
+          Every first has made it onto the fridge. Keys, cuppas, cosy nights,
+          and one very important poop: officially checked off.
+        </p>
+        <div class="full-house-magnets" aria-hidden="true">
+          <span>☕</span>
+          <span>🔑</span>
+          <span>🧩</span>
+          <span>🏠</span>
+          <span>🎉</span>
+        </div>
+      </section>
+    </div>
+    <p class="sr-only" id="effect-status" aria-live="polite"></p>
+  </body>
+</html>
