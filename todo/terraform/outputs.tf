@@ -16,7 +16,7 @@ output "website_url" {
 output "uploaded_files" {
   description = "Todo app S3 object keys managed by this project."
   value = sort(concat(
-    [for file in local.site_files : "${local.normalized_prefix}/${file}"],
+    [for file in keys(local.site_files) : "${local.normalized_prefix}/${file}"],
     [
       local.normalized_prefix,
       "${local.normalized_prefix}/",

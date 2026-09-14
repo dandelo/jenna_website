@@ -1,24 +1,40 @@
 const initialTasks = [
-  "Make a list of social groups to join/look into",
-  "Have an ice cream",
-  "Play some more game with Dylan",
-  "Doing something lovely for Fran",
-  "Acknowledge at least two super smart things you do this week, and don't call it being lazy",
-  "Try some mindfulness exercises",
-  "Buy a new retainer",
-  "Talk to Liz, or someone, about what role to move into in the future and what the steps are to get there",
-  "Complete a rubik's cube (no cheating!)",
-  "Eat tuna steak and rhubarb frangipane",
-  "At least once, when you notice yourself worrying about something, take a moment to ask 'is this actually a problem right now?' and if not, try to let it go",
+  "chose a film to watch at the weekend",
+  "re-invite everyone who didn't make it to your new home yet",
+  "buy some key hooks for the key shelf",
+  "put up the key shelf",
+  "buy the second bedside table",
+  "watch second episode of task master",
+  "write down three things that made the new home feel like yours",
+  "plan next gym visit",
+  "have a cozy time with a hot chocolate at home",
+  "find one thing to look forward to next week",
 ];
 
 const cookieName = "tinyWinsTodo";
-const listVersion = "jenna-list-2026-06-08-mural";
+const listVersion = "jenna-list-2026-09-07-home-hot-chocolate";
 const cookieMaxAge = 60 * 60 * 24 * 180;
 const maxPersistedTasks = 30;
 const defaultLevels = {
   worry: 3,
   gym: 0,
+};
+const defaultTheme = "classic";
+const themeText = {
+  classic: {
+    eyebrow: "Tiny missions",
+    title: "Tiny Wins Todo",
+    copy: "A cheerful little list for getting the good stuff done.",
+    activeTitle: "Still in progress",
+    doneTitle: "Done and dusted",
+  },
+  homewarming: {
+    eyebrow: "Homewarming mode",
+    title: "New Home Nesting",
+    copy: "Warm little missions for settling in, making memories, and claiming the sofa properly.",
+    activeTitle: "Still settling in",
+    doneTitle: "Moved into done",
+  },
 };
 const maxLevels = {
   worry: 5,
@@ -51,53 +67,105 @@ const milestoneBadges = [
   },
 ];
 const compliments = [
-  "Jenna has excellent main-character spreadsheet energy.",
-  "Jenna is basically a limited-edition good idea machine.",
-  "Jenna brings sunshine and sensible chaos in ideal proportions.",
-  "Jenna's brain deserves a tiny standing ovation.",
-  "Jenna is kind, funny, sharp, and suspiciously good at being lovely.",
-  "Jenna has premium sparkle settings enabled.",
-  "Jenna could make a Tuesday feel like a tiny festival.",
-  "Jenna has elite cozy-chaos management skills.",
-  "Jenna's ideas arrive with excellent lighting and snacks.",
-  "Jenna is operating at highly advanced lovely-person levels.",
-  "Jenna makes competence look suspiciously charming.",
-  "Jenna has a five-star brain and a very kind operating system.",
-  "Jenna has the exact right amount of sparkle and nonsense.",
-  "Jenna is quietly excellent in several highly specific ways.",
-  "Jenna brings top-tier wit with a generous side of warmth.",
-  "Jenna's presence improves the room's general forecast.",
+  "Jenna has a very rare talent for being clever and deeply kind at the same time.",
+  "Jenna makes ordinary moments feel like they have better lighting.",
+  "Jenna's brain is doing premium work, even when it pretends it is winging it.",
+  "Jenna has excellent instincts and an unreasonable amount of charm.",
+  "Jenna is thoughtful in a way that quietly changes the whole room.",
+  "Jenna brings top-tier wit with properly excellent emotional intelligence.",
+  "Jenna deserves credit for every invisible thing she keeps carrying.",
+  "Jenna is funny, resilient, warm, and alarmingly good company.",
+  "Jenna has the energy of someone who could fix a spreadsheet and a mood.",
+  "Jenna notices the little things, which is secretly a superpower.",
+  "Jenna's kindness has range, depth, and very good timing.",
+  "Jenna is allowed to be proud of herself without filing a supporting essay.",
+  "Jenna can make a small plan feel possible instead of annoying.",
+  "Jenna has a five-star combination of brains, warmth, and excellent nonsense.",
+  "Jenna is exactly the sort of person people feel lucky to know.",
+  "Jenna handles more than she gives herself credit for.",
+  "Jenna makes a home feel warmer just by being properly herself in it.",
+  "Jenna has excellent taste in tiny joys and very important snacks.",
+  "Jenna is brave in quiet ways that still absolutely count.",
+  "Jenna brings the sort of humour that makes hard days loosen their grip.",
+  "Jenna's company is the good kind of easy.",
+  "Jenna is building a life that deserves soft lighting and applause.",
+  "Jenna has strong main-character-on-a-comfy-sofa energy.",
+  "Jenna is allowed to take up space, rest, and still be wildly impressive.",
 ];
 const encouragements = [
-  "Tiny victory logged.",
-  "That absolutely counts.",
-  "Momentum acquired.",
-  "One less thing buzzing around.",
-  "Good job, that task has been gently defeated.",
-  "Small win, excellent form.",
-  "The list is visibly less powerful now.",
-  "A very respectable little triumph.",
-  "Progress has entered the chat.",
-  "Done is done, and done is excellent.",
+  "That is one less thing asking for brain space.",
+  "Excellent. The list has been politely humbled.",
+  "A small win, handled with style.",
+  "Future Jenna appreciates this development.",
+  "Progress made. No supporting paperwork required.",
+  "That counts, and it counts properly.",
+  "Nicely done. The task has left the building.",
+  "A calm little victory has been recorded.",
+  "Good work. Momentum is looking very cute today.",
+  "The day is now fractionally more under control.",
+  "Done and therefore officially not your problem.",
+  "Tiny triumph, strong execution.",
 ];
 const randomTaskIdeas = [
-  "Write down one thing that felt easier than expected",
-  "Take five slow breaths and unclench your shoulders",
-  "Drink a glass of water somewhere you can see daylight",
-  "Text someone a small kind thought",
-  "Name one thing your future self will be glad you did",
-  "Step outside for two minutes and notice three real colours",
-  "Make a tiny plan for tomorrow that starts kindly",
-  "Tidy one surface just enough to make it calmer",
-  "Put on a song that makes your brain feel lighter",
-  "Write one sentence about what you need, without judging it",
-  "Do one gentle stretch and call it a win",
-  "Notice one worry, then write the smallest next step",
-  "Make a cup of tea and do absolutely nothing while it brews",
-  "Find one small thing to look forward to this week",
-  "Say something kind to yourself that you would say to a friend",
-  "Spend ten minutes on a task that has been quietly bothering you",
-  "Open a window or step outside and take a proper breath",
+  "Review friend contract",
+  "Write a tiny note about something you are proud of",
+  "Take three slow breaths before doing the next thing",
+  "Drink some water and stand near a window for a minute",
+  "Send a kind message without overthinking it",
+  "Choose one worry and write the smallest useful next step",
+  "Put on a song that makes the room feel lighter",
+  "Make a snack or drink that feels like care",
+  "Do five minutes of tidying in one visible place",
+  "Write tomorrow's first task so morning Jenna has help",
+  "Step outside and notice one thing that is not urgent",
+  "Stretch your neck, shoulders, or back for two minutes",
+  "Ask yourself what would make today 5% easier",
+  "Put one annoying object back where it belongs",
+  "Read a few pages instead of scrolling for five minutes",
+  "Make one small plan with Dylan that sounds fun",
+  "Write down one compliment you are allowed to accept",
+  "Do something kind for your body without making it a project",
+  "Clear one tiny bit of admin from your future",
+  "Find one thing to look forward to this week",
+  "Sit quietly for two minutes and let that be enough",
+];
+const friendContractSections = [
+  {
+    key: "jenna",
+    direction: "upright",
+    signedBy: "Dylan",
+    lines: [
+      "Pay attention to me",
+      "You must get Jenna cake once per week",
+      "Attend VS twice a week",
+      "Always go to the cinema with Jenna",
+      "Always make Jenna tea",
+      "Holiday with Jenna twice a year",
+      "Visit Jenna's new flat frequently",
+      "Don't stop being my friend when you meet someone",
+    ],
+  },
+  {
+    key: "dylan",
+    direction: "flipped",
+    signedBy: "Jenna",
+    lines: [
+      {
+        text: "Jenna must provide AT LEAST two hugs each week a Dylan is seen",
+        marker: "*",
+        note: "each hug must last at least one hour",
+      },
+      "Frequently invite me to your new home for fun, food and relaxing",
+      "Continue to find new weird food, drinks and things for us to try",
+      "Come to my house to cook, eat & game with me at least once per fortnight",
+      "Scoop the cats often, and try not to be too allergic",
+      "Remember Jenna is awesome and must accept all compliments",
+      "Do walks with me",
+      "Write my weekly schedule every now and again, and help me stick to it",
+      "All rules apply ad-infinitum.",
+      "Any breaches will be taken to the court of cats, and appropriate punishment dished out",
+    ],
+  },
 ];
 
 function fallbackId(index = 0) {
@@ -165,12 +233,17 @@ function normaliseLevels(value) {
   };
 }
 
+function normaliseTheme(value) {
+  return Object.prototype.hasOwnProperty.call(themeText, value) ? value : defaultTheme;
+}
+
 function loadState() {
   const stored = readCookie(cookieName);
   if (!stored) {
     return {
       tasks: starterTasks(),
       levels: { ...defaultLevels },
+      theme: defaultTheme,
     };
   }
 
@@ -182,12 +255,14 @@ function loadState() {
     return {
       tasks: shouldRefreshDefaults ? starterTasks() : (savedTasks ?? starterTasks()),
       levels: normaliseLevels(parsed.levels),
+      theme: normaliseTheme(parsed.theme),
       needsSave: shouldRefreshDefaults,
     };
   } catch {
     return {
       tasks: starterTasks(),
       levels: { ...defaultLevels },
+      theme: defaultTheme,
     };
   }
 }
@@ -196,6 +271,7 @@ function saveState() {
   const payload = JSON.stringify({
     version: listVersion,
     levels,
+    theme,
     tasks: tasks.slice(0, maxPersistedTasks).map((task) => [task.title, task.done ? 1 : 0]),
   });
   writeCookie(cookieName, payload);
@@ -204,6 +280,7 @@ function saveState() {
 const loadedState = loadState();
 let tasks = loadedState.tasks;
 let levels = loadedState.levels;
+let theme = loadedState.theme;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 const els = {
@@ -211,6 +288,12 @@ const els = {
   badgeRack: document.querySelector("#badge-rack"),
   complimentButton: document.querySelector("#compliment-button"),
   complimentLine: document.querySelector("#compliment-line"),
+  contractCloseButton: document.querySelector("#contract-close-button"),
+  contractCopy: document.querySelector("#friend-contract-copy"),
+  contractFlipToggle: document.querySelector("#contract-flip-toggle"),
+  contractModal: document.querySelector("#friend-contract-modal"),
+  contractOrientationToggle: document.querySelector("#contract-orientation-toggle"),
+  contractSheet: document.querySelector(".contract-sheet"),
   doneCount: document.querySelector("#done-count"),
   doneList: document.querySelector("#done-list"),
   doneSection: document.querySelector("#done-section"),
@@ -218,13 +301,19 @@ const els = {
   effectStatus: document.querySelector("#effect-status"),
   encouragementLine: document.querySelector("#encouragement-line"),
   form: document.querySelector("#add-form"),
+  heroCopy: document.querySelector("#hero-copy"),
+  heroEyebrow: document.querySelector("#hero-eyebrow"),
   input: document.querySelector("#new-task"),
   list: document.querySelector("#task-list"),
+  metaThemeColor: document.querySelector("meta[name='theme-color']"),
+  pageTitle: document.querySelector("#page-title"),
   progress: document.querySelector("#progress-bar"),
   randomTaskButton: document.querySelector("#random-task-button"),
   resetButton: document.querySelector("#reset-button"),
+  secretContractButton: document.querySelector("#secret-contract-button"),
   summaryCount: document.querySelector("#summary-count"),
   summaryMood: document.querySelector("#summary-mood"),
+  themeToggle: document.querySelector("#theme-toggle"),
   worrySlider: document.querySelector("#worry-level"),
   worryValue: document.querySelector("#worry-value"),
   gymSlider: document.querySelector("#gym-visits"),
@@ -236,6 +325,7 @@ let draggedTaskId = null;
 let encouragementIndex = -1;
 let encouragementTimer;
 let effectTimer;
+let lastFocusedElement = null;
 let recentlyCompletedId = null;
 
 if (loadedState.needsSave) {
@@ -270,6 +360,32 @@ function updateLevels() {
   els.worryValue.textContent = String(levels.worry);
   els.gymSlider.value = String(levels.gym);
   els.gymValue.textContent = String(levels.gym);
+}
+
+function updateTheme() {
+  const isHomewarming = theme === "homewarming";
+  const text = themeText[theme] || themeText[defaultTheme];
+  document.body.dataset.theme = theme;
+  if (els.heroEyebrow) els.heroEyebrow.textContent = text.eyebrow;
+  if (els.pageTitle) els.pageTitle.textContent = text.title;
+  if (els.heroCopy) els.heroCopy.textContent = text.copy;
+
+  const activeTitle = document.querySelector("#active-title");
+  const doneTitle = document.querySelector("#done-title");
+  if (activeTitle) activeTitle.textContent = text.activeTitle;
+  if (doneTitle) doneTitle.textContent = text.doneTitle;
+  if (els.metaThemeColor) els.metaThemeColor.content = isHomewarming ? "#f0b971" : "#92ccea";
+
+  if (!els.themeToggle) return;
+  const label = els.themeToggle.querySelector(".theme-toggle__label");
+  const detail = els.themeToggle.querySelector(".theme-toggle__detail");
+  els.themeToggle.setAttribute("aria-pressed", String(isHomewarming));
+  els.themeToggle.setAttribute(
+    "aria-label",
+    `Switch theme. Current theme: ${isHomewarming ? "Home" : "Classic"}`,
+  );
+  if (label) label.textContent = "Theme";
+  if (detail) detail.textContent = isHomewarming ? "Home" : "Classic";
 }
 
 function activeTasks() {
@@ -366,9 +482,140 @@ function randomBetween(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+function isFriendContractTrigger(title) {
+  const normalisedTitle = cleanTitle(title).toLocaleLowerCase("en-GB");
+  return /\b(friend\s+contract|contract|friendship\s+terms)\b/.test(normalisedTitle);
+}
+
+function isShootingStarTask(title) {
+  return cleanTitle(title).toLocaleLowerCase("en-GB").includes("shooting star");
+}
+
+function appendLinkedText(element, text) {
+  const urlPattern = /https?:\/\/[^\s)]+/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = urlPattern.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      element.append(document.createTextNode(text.slice(lastIndex, match.index)));
+    }
+
+    const link = document.createElement("a");
+    link.href = match[0];
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = match[0];
+    link.addEventListener("click", (event) => event.stopPropagation());
+    element.append(link);
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    element.append(document.createTextNode(text.slice(lastIndex)));
+  }
+}
+
+function renderFriendContract() {
+  if (!els.contractCopy) return;
+
+  const fragment = document.createDocumentFragment();
+
+  friendContractSections.forEach((section) => {
+    const sectionElement = document.createElement("section");
+    sectionElement.className = `contract-section contract-section--${section.direction}`;
+
+    const list = document.createElement("ul");
+    list.className = "contract-lines";
+
+    section.lines.forEach((line) => {
+      const lineText = typeof line === "string" ? line : line.text;
+      const item = document.createElement("li");
+      const body = document.createElement("span");
+      body.className = "contract-line-body";
+      const text = document.createElement("span");
+      text.className = "contract-line-text";
+      text.textContent = lineText;
+
+      body.append(text);
+      if (typeof line === "object" && line.marker) {
+        const marker = document.createElement("span");
+        marker.className = "contract-line-marker";
+        marker.textContent = line.marker;
+        text.append(marker);
+      }
+
+      if (typeof line === "object" && line.note) {
+        const note = document.createElement("span");
+        note.className = "contract-line-note";
+        note.textContent = line.note;
+        body.append(note);
+      }
+
+      item.append(body);
+      list.append(item);
+    });
+
+    const signature = document.createElement("p");
+    signature.className = "contract-signature";
+    signature.innerHTML = "<span>Signed</span>";
+    signature.append(document.createTextNode(section.signedBy));
+
+    sectionElement.append(list, signature);
+    fragment.append(sectionElement);
+  });
+
+  els.contractCopy.replaceChildren(fragment);
+}
+
+function updateContractOrientationButton() {
+  if (!els.contractCopy || !els.contractOrientationToggle) return;
+  const isStraightened = els.contractCopy.classList.contains("is-straightened");
+  els.contractOrientationToggle.textContent = isStraightened ? "Mess it up again" : "Straighten page";
+}
+
+function updateContractFlipButton() {
+  if (!els.contractSheet || !els.contractFlipToggle) return;
+  const isFlipped = els.contractSheet.classList.contains("is-page-flipped");
+  els.contractFlipToggle.textContent = isFlipped ? "Flip back" : "Flip 180";
+}
+
+function openFriendContract({ straightened = false } = {}) {
+  if (
+    !els.contractModal ||
+    !els.contractCopy ||
+    !els.contractSheet ||
+    !els.contractCloseButton
+  ) {
+    return;
+  }
+
+  renderFriendContract();
+  els.contractCopy.classList.toggle("is-straightened", straightened);
+  els.contractSheet.classList.remove("is-page-flipped");
+  updateContractOrientationButton();
+  updateContractFlipButton();
+  lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  els.contractModal.hidden = false;
+  document.body.classList.add("is-contract-open");
+  els.contractCloseButton.focus();
+}
+
+function closeFriendContract() {
+  if (!els.contractModal) return;
+  els.contractModal.hidden = true;
+  document.body.classList.remove("is-contract-open");
+  if (lastFocusedElement) lastFocusedElement.focus();
+}
+
+function revealFriendContract(delay = 0) {
+  window.setTimeout(() => openFriendContract(), delay);
+}
+
 function addTask(title) {
   const cleanedTitle = cleanTitle(title);
   if (!cleanedTitle) return false;
+  const shouldRevealContract = isFriendContractTrigger(cleanedTitle);
 
   tasks = [
     {
@@ -381,6 +628,7 @@ function addTask(title) {
 
   saveState();
   render();
+  if (shouldRevealContract) revealFriendContract(220);
   return true;
 }
 
@@ -513,8 +761,29 @@ function triggerEffect(type) {
     }
   }
 
+  if (type === "shooting-star") {
+    els.effectStatus.textContent = "Shooting star spotted.";
+    fragment.append(createEffectPiece("effect-piece--meteor"));
+    fragment.append(
+      createEffectPiece("effect-piece--meteor effect-piece--meteor-secondary", {
+        "--meteor-delay": "0.52s",
+        "--meteor-scale": "0.68",
+      }),
+    );
+    for (let index = 0; index < 28; index += 1) {
+      fragment.append(
+        createEffectPiece("effect-piece--star", {
+          "--x": `${randomBetween(5, 95)}vw`,
+          "--y": `${randomBetween(8, 74)}vh`,
+          "--delay": `${randomBetween(0, 2.25)}s`,
+          "--size": `${randomBetween(5, 15)}px`,
+        }),
+      );
+    }
+  }
+
   els.effectLayer.append(fragment);
-  effectTimer = window.setTimeout(clearEffect, 2400);
+  effectTimer = window.setTimeout(clearEffect, type === "shooting-star" ? 4600 : 2400);
 }
 
 function triggerTaskSparkle(rect) {
@@ -606,13 +875,21 @@ function createTaskElement(task) {
 
     task.done = checkbox.checked;
     recentlyCompletedId = !wasDone && task.done ? task.id : null;
+    const shouldRevealContract = recentlyCompletedId && isFriendContractTrigger(task.title);
+    const shouldTriggerShootingStar = recentlyCompletedId && isShootingStarTask(task.title);
     if (recentlyCompletedId) {
       showEncouragement();
       triggerTaskSparkle(sparkleRect);
     }
     saveState();
     render(previousBadgeKeys);
-    if (!wasAllComplete && isAllComplete()) triggerEffect("complete");
+    if (!wasAllComplete && isAllComplete()) {
+      triggerEffect(shouldTriggerShootingStar ? "shooting-star" : "complete");
+    } else if (shouldRevealContract) {
+      revealFriendContract(260);
+    } else if (shouldTriggerShootingStar) {
+      triggerEffect("shooting-star");
+    }
   });
 
   const checkVisual = document.createElement("label");
@@ -620,10 +897,13 @@ function createTaskElement(task) {
   checkVisual.htmlFor = checkbox.id;
   checkVisual.setAttribute("aria-hidden", "true");
 
-  const title = document.createElement("label");
+  const title = document.createElement("span");
   title.className = "task-title";
-  title.htmlFor = checkbox.id;
-  title.textContent = task.title;
+  appendLinkedText(title, task.title);
+  title.addEventListener("click", (event) => {
+    if (event.target.closest("a")) return;
+    checkbox.click();
+  });
 
   const removeButton = document.createElement("button");
   removeButton.className = "icon-button icon-button--remove";
@@ -712,6 +992,7 @@ function resetList() {
   els.input.value = "";
   saveState();
   updateLevels();
+  updateTheme();
   render();
 }
 
@@ -729,6 +1010,50 @@ els.form.addEventListener("submit", (event) => {
 
 els.randomTaskButton.addEventListener("click", () => {
   addTask(randomTaskTitle());
+});
+
+if (els.secretContractButton) {
+  els.secretContractButton.addEventListener("click", () => {
+    openFriendContract();
+  });
+}
+
+if (els.contractCloseButton) {
+  els.contractCloseButton.addEventListener("click", closeFriendContract);
+}
+
+if (els.contractModal) {
+  els.contractModal.querySelectorAll("[data-contract-close]").forEach((button) => {
+    button.addEventListener("click", closeFriendContract);
+  });
+}
+
+if (els.contractOrientationToggle && els.contractCopy) {
+  els.contractOrientationToggle.addEventListener("click", () => {
+    els.contractCopy.classList.toggle("is-straightened");
+    updateContractOrientationButton();
+  });
+}
+
+if (els.contractFlipToggle && els.contractSheet) {
+  els.contractFlipToggle.addEventListener("click", () => {
+    els.contractSheet.classList.toggle("is-page-flipped");
+    updateContractFlipButton();
+  });
+}
+
+if (els.themeToggle) {
+  els.themeToggle.addEventListener("click", () => {
+    theme = theme === "homewarming" ? "classic" : "homewarming";
+    updateTheme();
+    saveState();
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && els.contractModal && !els.contractModal.hidden) {
+    closeFriendContract();
+  }
 });
 
 els.worrySlider.addEventListener("input", () => {
@@ -764,5 +1089,6 @@ els.resetButton.addEventListener("click", resetList);
   list.addEventListener("drop", (event) => handleListDrop(doneState, event));
 });
 
+updateTheme();
 updateLevels();
 render();

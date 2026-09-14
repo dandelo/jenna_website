@@ -2,14 +2,26 @@ locals {
   source_dir        = abspath("${path.module}/..")
   normalized_prefix = trimsuffix(trimprefix(var.site_prefix, "/"), "/")
 
-  site_files = toset(concat(
-    [
-      "index.html",
-      "styles.css",
-      "script.js",
-    ],
-    tolist(fileset(local.source_dir, "assets/**"))
-  ))
+  primary_site_files = [
+    "index.html",
+    "styles.css",
+    "script.js",
+  ]
+
+  versioned_site_files = {
+    "script.20260812-theme-toggle.js"  = "script.js"
+    "styles.20260812-theme-toggle.css" = "styles.css"
+  }
+
+  asset_site_files = {
+    for file in fileset(local.source_dir, "assets/**") : file => file
+  }
+
+  site_files = merge(
+    { for file in local.primary_site_files : file => file },
+    local.versioned_site_files,
+    local.asset_site_files,
+  )
 
   content_types = {
     css  = "text/css; charset=utf-8"
@@ -29,6 +41,9 @@ locals {
   no_cache_files = toset([
     "index.html",
     "script.js",
+    "styles.css",
+    "script.20260812-theme-toggle.js",
+    "styles.20260812-theme-toggle.css",
   ])
 }
 
@@ -40,12 +55,12 @@ resource "aws_s3_object" "site_files" {
   for_each = local.site_files
 
   bucket       = data.aws_s3_bucket.shared.id
-  key          = "${local.normalized_prefix}/${each.value}"
+  key          = "${local.normalized_prefix}/${each.key}"
   source       = "${local.source_dir}/${each.value}"
   etag         = filemd5("${local.source_dir}/${each.value}")
-  content_type = lookup(local.content_types, lower(element(reverse(split(".", each.value)), 0)), "application/octet-stream")
+  content_type = lookup(local.content_types, lower(element(reverse(split(".", each.key)), 0)), "application/octet-stream")
 
-  cache_control = contains(local.no_cache_files, each.value) ? "no-cache" : "public, max-age=3600"
+  cache_control = contains(local.no_cache_files, each.key) ? "no-cache" : "public, max-age=3600"
 }
 
 resource "aws_s3_object" "directory_index" {

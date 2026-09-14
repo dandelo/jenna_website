@@ -1,0 +1,8 @@
+TODO
+- Add a playable game, like snake.
+- Add multiple themes, that you can switch between
+- Add a hugely celebratory animation to one random task
+
+Done
+- "Add a random task" button - it's always something positive/reflective and good for mental health
+- add friend contract
