@@ -1,40 +1,149 @@
 const initialTasks = [
-  "chose a film to watch at the weekend",
-  "re-invite everyone who didn't make it to your new home yet",
-  "buy some key hooks for the key shelf",
-  "put up the key shelf",
-  "buy the second bedside table",
-  "watch second episode of task master",
-  "write down three things that made the new home feel like yours",
-  "plan next gym visit",
-  "have a cozy time with a hot chocolate at home",
-  "find one thing to look forward to next week",
+  "buy a hanging plant",
+  "tell me something that's just a little bit scary to share",
+  "put up the new key shelf",
+  "go to the gym next week",
+  "make a playlist of songs to dance and cook to in the kitchen",
+  "buy and assemble the second bedside table",
+  "invite Dylan to something",
+  "take a walk around the fields by your home with no phone (Dylan's can be invited)",
+  "buy a mirror for the hallway",
+  "try cooking one recipe you've never attempted before",
 ];
 
+const storageKey = "tinyWinsTodo";
 const cookieName = "tinyWinsTodo";
-const listVersion = "jenna-list-2026-09-07-home-hot-chocolate";
+const listVersion = "jenna-list-2026-09-15-progression";
 const cookieMaxAge = 60 * 60 * 24 * 180;
 const maxPersistedTasks = 30;
+const maxHistoryDays = 400;
 const defaultLevels = {
   worry: 3,
   gym: 0,
 };
 const defaultTheme = "classic";
-const themeText = {
-  classic: {
-    eyebrow: "Tiny missions",
-    title: "Tiny Wins Todo",
-    copy: "A cheerful little list for getting the good stuff done.",
-    activeTitle: "Still in progress",
-    doneTitle: "Done and dusted",
+
+// XP + level progression. XP is earned per completed task and per daily streak day.
+const xpPerCompletion = 12;
+const xpPerStreakDay = 6;
+const gameUnlockLevel = 2;
+// XP required to *reach* a given level index (level 1 = 0 XP). Smooth-ish curve.
+function xpForLevel(level) {
+  if (level <= 1) return 0;
+  // Quadratic-ish curve: level 2 = 40, 3 = 110, 4 = 210, 5 = 340, ...
+  return Math.round(20 * (level - 1) * level - 20 * (level - 1));
+}
+
+function levelForXp(xp) {
+  let level = 1;
+  while (xpForLevel(level + 1) <= xp) level += 1;
+  return level;
+}
+
+// Themes catalogue. `unlockLevel` gates a theme behind a player level.
+// classic + homewarming are always available (backwards compatible).
+const themeCatalogue = [
+  {
+    key: "classic",
+    name: "Classic",
+    unlockLevel: 1,
+    swatch: ["#92ccea", "#c8a7dd", "#ee6f98"],
+    metaColor: "#92ccea",
+    text: {
+      eyebrow: "Tiny missions",
+      title: "Tiny Wins Todo",
+      copy: "A cheerful little list for getting the good stuff done.",
+      activeTitle: "Still in progress",
+      doneTitle: "Done and dusted",
+    },
   },
-  homewarming: {
-    eyebrow: "Homewarming mode",
-    title: "New Home Nesting",
-    copy: "Warm little missions for settling in, making memories, and claiming the sofa properly.",
-    activeTitle: "Still settling in",
-    doneTitle: "Moved into done",
+  {
+    key: "homewarming",
+    name: "Homewarming",
+    unlockLevel: 1,
+    swatch: ["#f0b971", "#dd7a72", "#b7d3ad"],
+    metaColor: "#f0b971",
+    text: {
+      eyebrow: "Homewarming mode",
+      title: "New Home Nesting",
+      copy: "Warm little missions for settling in, making memories, and claiming the sofa properly.",
+      activeTitle: "Still settling in",
+      doneTitle: "Moved into done",
+    },
   },
+  {
+    key: "meadow",
+    name: "Meadow",
+    unlockLevel: 2,
+    swatch: ["#8fd6a8", "#f2d377", "#7fb2e0"],
+    metaColor: "#8fd6a8",
+    text: {
+      eyebrow: "Meadow mode",
+      title: "Sunny Meadow List",
+      copy: "Fresh-air missions for a bright, breezy, grass-between-your-toes kind of day.",
+      activeTitle: "Growing still",
+      doneTitle: "Gathered in",
+    },
+  },
+  {
+    key: "candy",
+    name: "Candy",
+    unlockLevel: 3,
+    swatch: ["#ff9ec4", "#ffd36e", "#b79cff"],
+    metaColor: "#ff9ec4",
+    text: {
+      eyebrow: "Candy mode",
+      title: "Sweet Little Wins",
+      copy: "Bubblegum missions for treating yourself while you tick things off.",
+      activeTitle: "Still on the shelf",
+      doneTitle: "In the sweet jar",
+    },
+  },
+  {
+    key: "midnight",
+    name: "Midnight",
+    unlockLevel: 4,
+    swatch: ["#8ea2ff", "#c79bff", "#5fd0d6"],
+    metaColor: "#1b2145",
+    text: {
+      eyebrow: "Midnight mode",
+      title: "Quiet Hours List",
+      copy: "Soft, low-light missions for winding down and being kind to future you.",
+      activeTitle: "Still glowing",
+      doneTitle: "Tucked in",
+    },
+  },
+  {
+    key: "cosmic",
+    name: "Cosmic",
+    unlockLevel: 5,
+    swatch: ["#a78bfa", "#ff8fd0", "#61e6ff"],
+    metaColor: "#160f2e",
+    text: {
+      eyebrow: "Cosmic mode",
+      title: "Stardust Missions",
+      copy: "Big-sky missions for when you are basically running the whole galaxy today.",
+      activeTitle: "Still in orbit",
+      doneTitle: "Landed",
+    },
+  },
+];
+
+const themeByKey = Object.fromEntries(themeCatalogue.map((entry) => [entry.key, entry]));
+// themeText kept for compatibility with existing lookups.
+const themeText = Object.fromEntries(
+  themeCatalogue.map((entry) => [entry.key, entry.text]),
+);
+
+// Companion character. Moods map to an SVG face/pose + a line of copy.
+const defaultCompanionName = "Pip";
+const companionMoods = {
+  celebrate: { face: "celebrate", line: (n) => `${n} is doing a little victory dance!` },
+  rolling: { face: "happy", line: (n) => `${n} loves this momentum.` },
+  happy: { face: "happy", line: (n) => `${n} is proud of you.` },
+  ready: { face: "ready", line: (n) => `${n} is ready when you are.` },
+  sleepy: { face: "sleepy", line: (n) => `${n} is getting cosy for the night.` },
+  droopy: { face: "droopy", line: (n) => `${n} misses ticking things off with you.` },
 };
 const maxLevels = {
   worry: 5,
@@ -234,17 +343,113 @@ function normaliseLevels(value) {
 }
 
 function normaliseTheme(value) {
-  return Object.prototype.hasOwnProperty.call(themeText, value) ? value : defaultTheme;
+  return Object.prototype.hasOwnProperty.call(themeByKey, value) ? value : defaultTheme;
+}
+
+// ---- Dates, streaks, progression -------------------------------------------
+
+function dayKey(date = new Date()) {
+  // Local-time YYYY-MM-DD so a "day" matches the user's own clock.
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function dayKeyOffset(offset, from = new Date()) {
+  const date = new Date(from);
+  date.setDate(date.getDate() + offset);
+  return dayKey(date);
+}
+
+function normaliseHistory(value) {
+  if (!value || typeof value !== "object") return {};
+  const out = {};
+  Object.entries(value).forEach(([key, count]) => {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+      const n = Number.parseInt(count, 10);
+      if (Number.isFinite(n) && n > 0) out[key] = n;
+    }
+  });
+  // Trim to the most recent maxHistoryDays entries so the store stays small.
+  const keys = Object.keys(out).sort();
+  if (keys.length > maxHistoryDays) {
+    keys.slice(0, keys.length - maxHistoryDays).forEach((key) => delete out[key]);
+  }
+  return out;
+}
+
+function computeStreakFromHistory(history, today = dayKey()) {
+  const yesterday = dayKeyOffset(-1);
+  // Current streak only counts if the most recent active day is today or yesterday.
+  let anchor = history[today] ? today : history[yesterday] ? yesterday : null;
+  let current = 0;
+  if (anchor) {
+    let cursor = new Date(anchor);
+    while (history[dayKey(cursor)]) {
+      current += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+  }
+  // Best streak: longest run of consecutive active days ever recorded.
+  const days = Object.keys(history).sort();
+  let best = 0;
+  let run = 0;
+  let previous = null;
+  days.forEach((day) => {
+    if (previous && dayKeyOffset(1, new Date(previous)) === day) {
+      run += 1;
+    } else {
+      run = 1;
+    }
+    if (run > best) best = run;
+    previous = day;
+  });
+  return { current, best: Math.max(best, current) };
+}
+
+function normaliseProgress(value) {
+  const xp = Math.max(0, Number.parseInt(value?.xp, 10) || 0);
+  return {
+    xp,
+    // level is derived from xp, but we persist it to detect level-ups on load.
+    level: levelForXp(xp),
+    seenLevel: Math.max(1, Number.parseInt(value?.seenLevel, 10) || 1),
+    gameBest: Math.max(0, Number.parseInt(value?.gameBest, 10) || 0),
+  };
+}
+
+function normaliseCompanionName(value) {
+  if (typeof value !== "string") return defaultCompanionName;
+  const cleaned = value.trim().replace(/\s+/g, " ").slice(0, 18);
+  return cleaned || defaultCompanionName;
+}
+
+function readStore() {
+  // Prefer localStorage (roomy). Fall back to the legacy cookie so an existing
+  // list on this device migrates seamlessly the first time.
+  try {
+    const local = window.localStorage.getItem(storageKey);
+    if (local) return local;
+  } catch {
+    // localStorage may be unavailable (private mode); fall through to cookie.
+  }
+  return readCookie(cookieName);
 }
 
 function loadState() {
-  const stored = readCookie(cookieName);
+  const stored = readStore();
+  const fresh = () => ({
+    tasks: starterTasks(),
+    levels: { ...defaultLevels },
+    theme: defaultTheme,
+    history: {},
+    progress: { xp: 0, level: 1, seenLevel: 1 },
+    companionName: defaultCompanionName,
+  });
+
   if (!stored) {
-    return {
-      tasks: starterTasks(),
-      levels: { ...defaultLevels },
-      theme: defaultTheme,
-    };
+    return { ...fresh(), needsSave: true };
   }
 
   try {
@@ -256,14 +461,13 @@ function loadState() {
       tasks: shouldRefreshDefaults ? starterTasks() : (savedTasks ?? starterTasks()),
       levels: normaliseLevels(parsed.levels),
       theme: normaliseTheme(parsed.theme),
+      history: normaliseHistory(parsed.history),
+      progress: normaliseProgress(parsed.progress),
+      companionName: normaliseCompanionName(parsed.companionName),
       needsSave: shouldRefreshDefaults,
     };
   } catch {
-    return {
-      tasks: starterTasks(),
-      levels: { ...defaultLevels },
-      theme: defaultTheme,
-    };
+    return { ...fresh(), needsSave: true };
   }
 }
 
@@ -272,8 +476,17 @@ function saveState() {
     version: listVersion,
     levels,
     theme,
+    history,
+    progress,
+    companionName,
     tasks: tasks.slice(0, maxPersistedTasks).map((task) => [task.title, task.done ? 1 : 0]),
   });
+  try {
+    window.localStorage.setItem(storageKey, payload);
+  } catch {
+    // Ignore quota / unavailable errors; cookie write below still gives us
+    // a smaller fallback for the essentials.
+  }
   writeCookie(cookieName, payload);
 }
 
@@ -281,6 +494,10 @@ const loadedState = loadState();
 let tasks = loadedState.tasks;
 let levels = loadedState.levels;
 let theme = loadedState.theme;
+let history = loadedState.history;
+let progress = loadedState.progress;
+let companionName = loadedState.companionName;
+let streak = computeStreakFromHistory(history);
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 const els = {
@@ -313,11 +530,36 @@ const els = {
   secretContractButton: document.querySelector("#secret-contract-button"),
   summaryCount: document.querySelector("#summary-count"),
   summaryMood: document.querySelector("#summary-mood"),
-  themeToggle: document.querySelector("#theme-toggle"),
   worrySlider: document.querySelector("#worry-level"),
   worryValue: document.querySelector("#worry-value"),
   gymSlider: document.querySelector("#gym-visits"),
   gymValue: document.querySelector("#gym-value"),
+  // Progression + streaks + companion + game
+  statusBar: document.querySelector("#status-bar"),
+  streakValue: document.querySelector("#streak-value"),
+  streakLabel: document.querySelector("#streak-label"),
+  streakBest: document.querySelector("#streak-best"),
+  levelValue: document.querySelector("#level-value"),
+  xpBar: document.querySelector("#xp-bar"),
+  xpText: document.querySelector("#xp-text"),
+  companion: document.querySelector("#companion"),
+  companionFace: document.querySelector("#companion-face"),
+  companionLine: document.querySelector("#companion-line"),
+  companionName: document.querySelector("#companion-name"),
+  companionRename: document.querySelector("#companion-rename"),
+  themePicker: document.querySelector("#theme-picker"),
+  themePickerButton: document.querySelector("#theme-picker-button"),
+  themePickerName: document.querySelector("#theme-picker-name"),
+  themePickerMenu: document.querySelector("#theme-picker-menu"),
+  gameButton: document.querySelector("#game-button"),
+  gameModal: document.querySelector("#game-modal"),
+  gameCanvas: document.querySelector("#game-canvas"),
+  gameClose: document.querySelector("#game-close"),
+  gameScore: document.querySelector("#game-score"),
+  gameBest: document.querySelector("#game-best"),
+  gameOverlay: document.querySelector("#game-overlay"),
+  gameStart: document.querySelector("#game-start"),
+  gameLockNote: document.querySelector("#game-lock-note"),
 };
 
 let complimentIndex = -1;
@@ -362,11 +604,43 @@ function updateLevels() {
   els.gymValue.textContent = String(levels.gym);
 }
 
+function timeOfDay(date = new Date()) {
+  const h = date.getHours();
+  if (h < 5) return "night";
+  if (h < 12) return "morning";
+  if (h < 18) return "afternoon";
+  if (h < 22) return "evening";
+  return "night";
+}
+
+function greetingFor(part) {
+  switch (part) {
+    case "morning":
+      return "Good morning, Jenna";
+    case "afternoon":
+      return "Good afternoon, Jenna";
+    case "evening":
+      return "Good evening, Jenna";
+    default:
+      return "Late night, Jenna";
+  }
+}
+
+function themeUnlocked(key) {
+  const entry = themeByKey[key];
+  if (!entry) return false;
+  return progress.level >= entry.unlockLevel;
+}
+
 function updateTheme() {
-  const isHomewarming = theme === "homewarming";
-  const text = themeText[theme] || themeText[defaultTheme];
+  const entry = themeByKey[theme] || themeByKey[defaultTheme];
+  const text = entry.text;
   document.body.dataset.theme = theme;
-  if (els.heroEyebrow) els.heroEyebrow.textContent = text.eyebrow;
+
+  // Time-of-day greeting replaces the eyebrow so the page feels like it knows
+  // what part of the day it is, while the theme still owns the copy + title.
+  const part = timeOfDay();
+  if (els.heroEyebrow) els.heroEyebrow.textContent = `${greetingFor(part)} · ${text.eyebrow}`;
   if (els.pageTitle) els.pageTitle.textContent = text.title;
   if (els.heroCopy) els.heroCopy.textContent = text.copy;
 
@@ -374,18 +648,87 @@ function updateTheme() {
   const doneTitle = document.querySelector("#done-title");
   if (activeTitle) activeTitle.textContent = text.activeTitle;
   if (doneTitle) doneTitle.textContent = text.doneTitle;
-  if (els.metaThemeColor) els.metaThemeColor.content = isHomewarming ? "#f0b971" : "#92ccea";
+  if (els.metaThemeColor) els.metaThemeColor.content = entry.metaColor;
 
-  if (!els.themeToggle) return;
-  const label = els.themeToggle.querySelector(".theme-toggle__label");
-  const detail = els.themeToggle.querySelector(".theme-toggle__detail");
-  els.themeToggle.setAttribute("aria-pressed", String(isHomewarming));
-  els.themeToggle.setAttribute(
-    "aria-label",
-    `Switch theme. Current theme: ${isHomewarming ? "Home" : "Classic"}`,
-  );
-  if (label) label.textContent = "Theme";
-  if (detail) detail.textContent = isHomewarming ? "Home" : "Classic";
+  renderThemePicker();
+}
+
+function renderThemePicker() {
+  if (!els.themePickerName || !els.themePickerMenu) return;
+  const active = themeByKey[theme] || themeByKey[defaultTheme];
+  els.themePickerName.textContent = active.name;
+  if (els.themePickerButton) {
+    els.themePickerButton.setAttribute("aria-label", `Theme: ${active.name}. Choose a theme.`);
+  }
+
+  els.themePickerMenu.replaceChildren();
+  const fragment = document.createDocumentFragment();
+  themeCatalogue.forEach((entry) => {
+    const unlocked = progress.level >= entry.unlockLevel;
+    const option = document.createElement("button");
+    option.type = "button";
+    option.className = "theme-option";
+    option.dataset.theme = entry.key;
+    option.setAttribute("role", "menuitemradio");
+    option.setAttribute("aria-checked", String(entry.key === theme));
+    if (!unlocked) {
+      option.disabled = true;
+      option.classList.add("is-locked");
+    }
+    if (entry.key === theme) option.classList.add("is-active");
+
+    const swatch = document.createElement("span");
+    swatch.className = "theme-option__swatch";
+    swatch.setAttribute("aria-hidden", "true");
+    swatch.style.background = `linear-gradient(135deg, ${entry.swatch[0]} 0 34%, ${entry.swatch[1]} 34% 67%, ${entry.swatch[2]} 67%)`;
+
+    const label = document.createElement("span");
+    label.className = "theme-option__label";
+    label.textContent = entry.name;
+
+    const meta = document.createElement("span");
+    meta.className = "theme-option__meta";
+    meta.textContent = unlocked
+      ? entry.key === theme
+        ? "Active"
+        : "Ready"
+      : `Level ${entry.unlockLevel}`;
+
+    option.append(swatch, label, meta);
+    option.addEventListener("click", () => {
+      if (option.disabled) return;
+      setTheme(entry.key);
+      closeThemePicker();
+    });
+    fragment.append(option);
+  });
+  els.themePickerMenu.append(fragment);
+}
+
+function setTheme(key) {
+  if (!themeUnlocked(key)) return;
+  theme = key;
+  updateTheme();
+  updateCompanion();
+  saveState();
+}
+
+function openThemePicker() {
+  if (!els.themePicker) return;
+  els.themePicker.classList.add("is-open");
+  if (els.themePickerButton) els.themePickerButton.setAttribute("aria-expanded", "true");
+}
+
+function closeThemePicker() {
+  if (!els.themePicker) return;
+  els.themePicker.classList.remove("is-open");
+  if (els.themePickerButton) els.themePickerButton.setAttribute("aria-expanded", "false");
+}
+
+function toggleThemePicker() {
+  if (!els.themePicker) return;
+  if (els.themePicker.classList.contains("is-open")) closeThemePicker();
+  else openThemePicker();
 }
 
 function activeTasks() {
@@ -782,6 +1125,22 @@ function triggerEffect(type) {
     }
   }
 
+  if (type === "level-up") {
+    els.effectStatus.textContent = `Level ${progress.level} reached.`;
+    for (let index = 0; index < 40; index += 1) {
+      fragment.append(
+        createEffectPiece("effect-piece--levelup", {
+          "--x": `${randomBetween(6, 94)}vw`,
+          "--y": `${randomBetween(20, 80)}vh`,
+          "--delay": `${randomBetween(0, 0.5)}s`,
+          "--size": `${randomBetween(10, 24)}px`,
+          "--rotate": `${randomBetween(-180, 180)}deg`,
+          "--color": ["#f5d66f", "#92ccea", "#c8a7dd", "#ee6f98", "#8fd6a8"][index % 5],
+        }),
+      );
+    }
+  }
+
   els.effectLayer.append(fragment);
   effectTimer = window.setTimeout(clearEffect, type === "shooting-star" ? 4600 : 2400);
 }
@@ -880,6 +1239,7 @@ function createTaskElement(task) {
     if (recentlyCompletedId) {
       showEncouragement();
       triggerTaskSparkle(sparkleRect);
+      recordCompletion();
     }
     saveState();
     render(previousBadgeKeys);
@@ -944,6 +1304,165 @@ function handleListDrop(doneState, event) {
   }
 }
 
+// ---- Progression, streaks, companion ---------------------------------------
+
+function updateStatusBar() {
+  streak = computeStreakFromHistory(history);
+  if (els.streakValue) els.streakValue.textContent = String(streak.current);
+  if (els.streakLabel) {
+    els.streakLabel.textContent = streak.current === 1 ? "day streak" : "day streak";
+  }
+  if (els.streakBest) {
+    els.streakBest.textContent = streak.best > 0 ? `Best: ${streak.best}` : "New start";
+  }
+
+  const level = progress.level;
+  const currentFloor = xpForLevel(level);
+  const nextFloor = xpForLevel(level + 1);
+  const span = Math.max(1, nextFloor - currentFloor);
+  const into = Math.min(span, progress.xp - currentFloor);
+  const percent = Math.round((into / span) * 100);
+
+  if (els.levelValue) els.levelValue.textContent = String(level);
+  if (els.xpBar) els.xpBar.style.width = `${percent}%`;
+  if (els.xpText) els.xpText.textContent = `${into} / ${span} XP to level ${level + 1}`;
+}
+
+function updateGameLock() {
+  const unlocked = progress.level >= gameUnlockLevel;
+  if (els.gameButton) {
+    els.gameButton.disabled = !unlocked;
+    els.gameButton.classList.toggle("is-locked", !unlocked);
+    els.gameButton.textContent = unlocked ? "Play Tiny Hop" : `Game · Level ${gameUnlockLevel}`;
+  }
+}
+
+function grantXp(amount, { celebrate = true } = {}) {
+  if (amount <= 0) return;
+  const before = progress.level;
+  progress.xp += amount;
+  progress.level = levelForXp(progress.xp);
+  if (progress.level > before) {
+    handleLevelUp(before, progress.level, { celebrate });
+  }
+  progress.seenLevel = progress.level;
+}
+
+function handleLevelUp(fromLevel, toLevel, { celebrate = true } = {}) {
+  // Announce any themes unlocked between the two levels.
+  const newlyUnlocked = themeCatalogue.filter(
+    (entry) => entry.unlockLevel > fromLevel && entry.unlockLevel <= toLevel,
+  );
+  const gameJustUnlocked = fromLevel < gameUnlockLevel && toLevel >= gameUnlockLevel;
+
+  renderThemePicker();
+  updateGameLock();
+
+  if (celebrate) {
+    triggerEffect("level-up");
+    let message = `Level ${toLevel}! `;
+    const bits = [];
+    newlyUnlocked.forEach((entry) => bits.push(`${entry.name} theme unlocked`));
+    if (gameJustUnlocked) bits.push("Tiny Hop game unlocked");
+    message += bits.length ? bits.join(" · ") : "Nicely levelled up.";
+    announce(message);
+    if (els.companionLine) {
+      companionOverride = `${companionName}: level ${toLevel}! ${bits.length ? bits[0] + "." : "so proud."}`;
+      updateCompanion();
+      window.clearTimeout(companionOverrideTimer);
+      companionOverrideTimer = window.setTimeout(() => {
+        companionOverride = null;
+        updateCompanion();
+      }, 4200);
+    }
+  }
+}
+
+function announce(message) {
+  if (!els.effectStatus) return;
+  els.effectStatus.textContent = message;
+}
+
+// Records today's completion in history, keeps XP + streak moving.
+function recordCompletion() {
+  const today = dayKey();
+  const previousStreak = computeStreakFromHistory(history).current;
+  history[today] = (history[today] || 0) + 1;
+  const newStreak = computeStreakFromHistory(history);
+
+  let xp = xpPerCompletion;
+  // Bonus XP the first time a new streak day is banked.
+  if (newStreak.current > previousStreak) {
+    xp += xpPerStreakDay * newStreak.current;
+  }
+  grantXp(xp);
+  updateStatusBar();
+  updateCompanion();
+}
+
+function companionMoodKey() {
+  const { done, total } = taskCounts();
+  const part = timeOfDay();
+  if (total > 0 && done === total) return "celebrate";
+  if (part === "night") return "sleepy";
+  if (streak.current === 0 && done === 0) return "droopy";
+  if (total > 0 && done / total >= 0.5) return "rolling";
+  if (done > 0) return "happy";
+  return "ready";
+}
+
+function companionFaceMarkup(face) {
+  // Simple inline SVG faces; eyes + mouth vary by mood.
+  const eyes = {
+    happy: '<circle cx="34" cy="46" r="5"/><circle cx="66" cy="46" r="5"/>',
+    celebrate:
+      '<path d="M28 48 q6 -10 12 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M60 48 q6 -10 12 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>',
+    ready: '<circle cx="34" cy="46" r="4.5"/><circle cx="66" cy="46" r="4.5"/>',
+    sleepy:
+      '<path d="M28 47 q6 5 12 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M60 47 q6 5 12 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>',
+    droopy: '<circle cx="34" cy="49" r="4"/><circle cx="66" cy="49" r="4"/>',
+  };
+  const mouth = {
+    happy: '<path d="M38 62 q12 12 24 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>',
+    celebrate: '<path d="M36 60 q14 18 28 0 q-14 8 -28 0" fill="currentColor"/>',
+    ready: '<path d="M40 63 q10 6 20 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>',
+    sleepy: '<path d="M44 64 q6 4 12 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>',
+    droopy: '<path d="M38 66 q12 -10 24 0" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>',
+  };
+  const cheeks =
+    face === "happy" || face === "celebrate"
+      ? '<circle cx="24" cy="58" r="6" fill="var(--coral)" opacity="0.5"/><circle cx="76" cy="58" r="6" fill="var(--coral)" opacity="0.5"/>'
+      : "";
+  const zzz =
+    face === "sleepy"
+      ? '<text x="78" y="26" font-size="16" fill="currentColor" opacity="0.7">z</text><text x="86" y="16" font-size="11" fill="currentColor" opacity="0.6">z</text>'
+      : "";
+  return `<g fill="currentColor">${eyes[face] || eyes.ready}${cheeks}</g>${mouth[face] || mouth.ready}${zzz}`;
+}
+
+let companionOverride = null;
+let companionOverrideTimer;
+
+function updateCompanion() {
+  if (!els.companion) return;
+  const moodKey = companionMoodKey();
+  const mood = companionMoods[moodKey] || companionMoods.ready;
+  els.companion.dataset.mood = moodKey;
+  if (els.companionFace) els.companionFace.innerHTML = companionFaceMarkup(mood.face);
+  if (els.companionName) els.companionName.textContent = companionName;
+  if (els.companionLine) {
+    els.companionLine.textContent = companionOverride || mood.line(companionName);
+  }
+}
+
+function renameCompanion() {
+  const next = window.prompt("Name your companion", companionName);
+  if (next === null) return;
+  companionName = normaliseCompanionName(next);
+  updateCompanion();
+  saveState();
+}
+
 function render(previousBadgeKeys = earnedBadgeKeySet()) {
   els.list.replaceChildren();
   els.doneList.replaceChildren();
@@ -957,6 +1476,7 @@ function render(previousBadgeKeys = earnedBadgeKeySet()) {
     els.activeCount.textContent = "0 to go";
     renderBadges(previousBadgeKeys);
     updateSummary();
+    updateCompanion();
     return;
   }
 
@@ -983,16 +1503,22 @@ function render(previousBadgeKeys = earnedBadgeKeySet()) {
   els.doneList.append(doneFragment);
   renderBadges(previousBadgeKeys);
   updateSummary();
+  updateCompanion();
   recentlyCompletedId = null;
 }
 
 function resetList() {
+  // Reset only the task list + sliders. Streaks, XP, levels, unlocks and the
+  // companion name are persistent memory and deliberately survive a reset.
   tasks = starterTasks();
   levels = { ...defaultLevels };
   els.input.value = "";
   saveState();
   updateLevels();
   updateTheme();
+  updateStatusBar();
+  updateGameLock();
+  updateCompanion();
   render();
 }
 
@@ -1042,17 +1568,37 @@ if (els.contractFlipToggle && els.contractSheet) {
   });
 }
 
-if (els.themeToggle) {
-  els.themeToggle.addEventListener("click", () => {
-    theme = theme === "homewarming" ? "classic" : "homewarming";
-    updateTheme();
-    saveState();
+if (els.themePickerButton) {
+  els.themePickerButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleThemePicker();
   });
 }
 
+if (els.themePicker) {
+  document.addEventListener("click", (event) => {
+    if (!els.themePicker.classList.contains("is-open")) return;
+    if (!els.themePicker.contains(event.target)) closeThemePicker();
+  });
+}
+
+if (els.companionRename) {
+  els.companionRename.addEventListener("click", renameCompanion);
+}
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && els.contractModal && !els.contractModal.hidden) {
-    closeFriendContract();
+  if (event.key === "Escape") {
+    if (els.contractModal && !els.contractModal.hidden) {
+      closeFriendContract();
+      return;
+    }
+    if (els.gameModal && !els.gameModal.hidden) {
+      closeGame();
+      return;
+    }
+    if (els.themePicker && els.themePicker.classList.contains("is-open")) {
+      closeThemePicker();
+    }
   }
 });
 
@@ -1089,6 +1635,297 @@ els.resetButton.addEventListener("click", resetList);
   list.addEventListener("drop", (event) => handleListDrop(doneState, event));
 });
 
+// ---- Tiny Hop: a small self-contained canvas game --------------------------
+// A cosy one-button hopper. Hold/press to hop over gaps; collect stars for
+// score. Keyboard (Space/Arrow Up/W) and touch/click supported. High score
+// persists in the saved progress object.
+const game = {
+  raf: 0,
+  running: false,
+  ctx: null,
+  w: 0,
+  h: 0,
+  dpr: 1,
+  ground: 0,
+  player: null,
+  obstacles: [],
+  stars: [],
+  speed: 0,
+  score: 0,
+  spawnTimer: 0,
+  starTimer: 0,
+  lastTime: 0,
+};
+
+function gameBestScore() {
+  return Math.max(0, Number.parseInt(progress.gameBest, 10) || 0);
+}
+
+function setGameBest(value) {
+  if (value > gameBestScore()) {
+    progress.gameBest = value;
+    saveState();
+  }
+}
+
+function sizeGameCanvas() {
+  if (!els.gameCanvas) return;
+  const rect = els.gameCanvas.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  game.dpr = dpr;
+  game.w = rect.width;
+  game.h = rect.height;
+  els.gameCanvas.width = Math.round(rect.width * dpr);
+  els.gameCanvas.height = Math.round(rect.height * dpr);
+  game.ctx = els.gameCanvas.getContext("2d");
+  game.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  game.ground = game.h - 28;
+}
+
+function resetGameState() {
+  sizeGameCanvas();
+  game.player = {
+    x: Math.max(40, game.w * 0.18),
+    y: game.ground,
+    vy: 0,
+    r: 16,
+    onGround: true,
+  };
+  game.obstacles = [];
+  game.stars = [];
+  game.speed = Math.max(3.2, game.w / 150);
+  game.score = 0;
+  game.spawnTimer = 60;
+  game.starTimer = 90;
+  if (els.gameScore) els.gameScore.textContent = "0";
+  if (els.gameBest) els.gameBest.textContent = String(gameBestScore());
+}
+
+function gameHop() {
+  if (!game.running || !game.player) return;
+  if (game.player.onGround) {
+    game.player.vy = -Math.max(9, game.h * 0.024);
+    game.player.onGround = false;
+  }
+}
+
+function endGame() {
+  game.running = false;
+  window.cancelAnimationFrame(game.raf);
+  setGameBest(Math.floor(game.score));
+  if (els.gameOverlay) {
+    els.gameOverlay.hidden = false;
+    els.gameOverlay.querySelector("[data-game-result]").textContent =
+      `Score ${Math.floor(game.score)} · Best ${gameBestScore()}`;
+  }
+  if (els.gameStart) els.gameStart.textContent = "Play again";
+  // A game session also nudges progression a little, so play is never wasted.
+  grantXp(Math.min(20, Math.floor(game.score / 5)), { celebrate: true });
+  updateStatusBar();
+}
+
+function gameStep(timestamp) {
+  if (!game.running) return;
+  const ctx = game.ctx;
+  if (!ctx) return;
+  if (!game.lastTime) game.lastTime = timestamp;
+  const dt = Math.min(2.4, (timestamp - game.lastTime) / 16.67);
+  game.lastTime = timestamp;
+
+  // Physics
+  const gravity = Math.max(0.5, game.h * 0.0016);
+  game.player.vy += gravity * dt;
+  game.player.y += game.player.vy * dt;
+  if (game.player.y >= game.ground) {
+    game.player.y = game.ground;
+    game.player.vy = 0;
+    game.player.onGround = true;
+  }
+
+  game.speed += 0.0016 * dt;
+
+  // Spawn obstacles + stars
+  game.spawnTimer -= dt;
+  if (game.spawnTimer <= 0) {
+    const height = randomBetween(18, 40);
+    game.obstacles.push({ x: game.w + 20, w: randomBetween(16, 26), h: height });
+    game.spawnTimer = randomBetween(70, 130) / (game.speed / 3.4);
+  }
+  game.starTimer -= dt;
+  if (game.starTimer <= 0) {
+    game.stars.push({
+      x: game.w + 20,
+      y: game.ground - randomBetween(50, 120),
+      r: 9,
+      got: false,
+    });
+    game.starTimer = randomBetween(90, 180);
+  }
+
+  // Move + collide
+  const px = game.player.x;
+  const py = game.player.y;
+  const pr = game.player.r;
+  game.obstacles.forEach((o) => {
+    o.x -= game.speed * dt;
+  });
+  game.stars.forEach((s) => {
+    s.x -= game.speed * dt;
+  });
+  game.obstacles = game.obstacles.filter((o) => o.x + o.w > -10);
+  game.stars = game.stars.filter((s) => s.x > -20 && !s.got);
+
+  let hit = false;
+  game.obstacles.forEach((o) => {
+    const oy = game.ground - o.h;
+    if (px + pr > o.x && px - pr < o.x + o.w && py + pr > oy) hit = true;
+  });
+  game.stars.forEach((s) => {
+    const dx = px - s.x;
+    const dy = py - s.y;
+    if (Math.hypot(dx, dy) < pr + s.r) {
+      s.got = true;
+      game.score += 10;
+    }
+  });
+
+  // Passive score for distance
+  game.score += 0.08 * dt * game.speed;
+  if (els.gameScore) els.gameScore.textContent = String(Math.floor(game.score));
+
+  // Draw
+  const themeEntry = themeByKey[theme] || themeByKey.classic;
+  ctx.clearRect(0, 0, game.w, game.h);
+  // ground line
+  ctx.strokeStyle = "rgba(70,35,73,0.28)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, game.ground + pr);
+  ctx.lineTo(game.w, game.ground + pr);
+  ctx.stroke();
+  // stars
+  game.stars.forEach((s) => {
+    ctx.fillStyle = themeEntry.swatch[1];
+    drawStar(ctx, s.x, s.y, 5, s.r, s.r / 2);
+  });
+  // obstacles
+  ctx.fillStyle = themeEntry.swatch[2];
+  game.obstacles.forEach((o) => {
+    const oy = game.ground - o.h;
+    ctx.beginPath();
+    ctx.roundRect(o.x, oy, o.w, o.h + pr, 5);
+    ctx.fill();
+  });
+  // player
+  ctx.fillStyle = themeEntry.swatch[0];
+  ctx.beginPath();
+  ctx.arc(px, py, pr, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "rgba(53,36,63,0.85)";
+  ctx.beginPath();
+  ctx.arc(px + 5, py - 3, 2.4, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (hit) {
+    endGame();
+    return;
+  }
+  game.raf = window.requestAnimationFrame(gameStep);
+}
+
+function drawStar(ctx, cx, cy, spikes, outer, inner) {
+  let rot = (Math.PI / 2) * 3;
+  const step = Math.PI / spikes;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - outer);
+  for (let i = 0; i < spikes; i += 1) {
+    ctx.lineTo(cx + Math.cos(rot) * outer, cy + Math.sin(rot) * outer);
+    rot += step;
+    ctx.lineTo(cx + Math.cos(rot) * inner, cy + Math.sin(rot) * inner);
+    rot += step;
+  }
+  ctx.lineTo(cx, cy - outer);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function startGameRun() {
+  if (els.gameOverlay) els.gameOverlay.hidden = true;
+  resetGameState();
+  game.running = true;
+  game.lastTime = 0;
+  game.raf = window.requestAnimationFrame(gameStep);
+}
+
+function openGame() {
+  if (progress.level < gameUnlockLevel || !els.gameModal) return;
+  lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  els.gameModal.hidden = false;
+  document.body.classList.add("is-contract-open");
+  resetGameState();
+  if (els.gameOverlay) {
+    els.gameOverlay.hidden = false;
+    els.gameOverlay.querySelector("[data-game-result]").textContent =
+      `Best ${gameBestScore()}`;
+  }
+  if (els.gameStart) {
+    els.gameStart.textContent = "Start";
+    els.gameStart.focus();
+  }
+}
+
+function closeGame() {
+  if (!els.gameModal) return;
+  game.running = false;
+  window.cancelAnimationFrame(game.raf);
+  els.gameModal.hidden = true;
+  document.body.classList.remove("is-contract-open");
+  if (lastFocusedElement) lastFocusedElement.focus();
+}
+
+if (els.gameButton) {
+  els.gameButton.addEventListener("click", openGame);
+}
+if (els.gameClose) {
+  els.gameClose.addEventListener("click", closeGame);
+}
+if (els.gameModal) {
+  els.gameModal.querySelectorAll("[data-game-close]").forEach((button) => {
+    button.addEventListener("click", closeGame);
+  });
+}
+if (els.gameStart) {
+  els.gameStart.addEventListener("click", startGameRun);
+}
+if (els.gameCanvas) {
+  els.gameCanvas.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    if (game.running) gameHop();
+    else if (els.gameOverlay && !els.gameOverlay.hidden) startGameRun();
+  });
+}
+document.addEventListener("keydown", (event) => {
+  if (els.gameModal && !els.gameModal.hidden) {
+    if (event.code === "Space" || event.code === "ArrowUp" || event.code === "KeyW") {
+      event.preventDefault();
+      if (game.running) gameHop();
+      else startGameRun();
+    }
+  }
+});
+window.addEventListener("resize", () => {
+  if (els.gameModal && !els.gameModal.hidden) sizeGameCanvas();
+});
+
+// Re-render greeting if the app is left open across a time-of-day boundary.
+window.setInterval(() => {
+  updateTheme();
+  updateCompanion();
+}, 5 * 60 * 1000);
+
 updateTheme();
 updateLevels();
+updateStatusBar();
+updateGameLock();
+updateCompanion();
 render();

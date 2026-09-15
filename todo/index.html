@@ -24,15 +24,23 @@
           src="/todo/assets/todo-desk.png"
           alt="Illustration of a colourful desktop with sticky notes, pencil, plants, and a blank checklist."
         >
-        <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch theme. Current theme: Classic">
-          <span class="theme-toggle__text">
-            <span class="theme-toggle__label">Theme</span>
-            <span class="theme-toggle__detail">Classic</span>
-          </span>
-          <span class="theme-toggle__track" aria-hidden="true">
-            <span class="theme-toggle__knob"></span>
-          </span>
-        </button>
+        <div class="theme-picker" id="theme-picker">
+          <button
+            class="theme-picker__button"
+            id="theme-picker-button"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Theme picker"
+          >
+            <span class="theme-picker__text">
+              <span class="theme-picker__label">Theme</span>
+              <span class="theme-picker__name" id="theme-picker-name">Classic</span>
+            </span>
+            <span class="theme-picker__chevron" aria-hidden="true"></span>
+          </button>
+          <div class="theme-picker__menu" id="theme-picker-menu" role="menu" aria-label="Choose a theme"></div>
+        </div>
         <div class="hero__content">
           <p class="eyebrow" id="hero-eyebrow">Tiny missions</p>
           <h1 id="page-title">Tiny Wins Todo</h1>
@@ -43,6 +51,42 @@
       </section>
 
       <section class="workspace" aria-label="Todo list">
+        <div class="status-bar" id="status-bar" aria-label="Progress and companion">
+          <div class="status-card status-card--streak">
+            <span class="status-card__figure"><span id="streak-value">0</span></span>
+            <span class="status-card__text">
+              <span class="status-card__label" id="streak-label">day streak</span>
+              <span class="status-card__sub" id="streak-best">New start</span>
+            </span>
+          </div>
+
+          <div class="status-card status-card--level">
+            <div class="status-card__level-head">
+              <span class="status-card__label">Level <span id="level-value">1</span></span>
+              <span class="status-card__sub" id="xp-text">0 / 40 XP to level 2</span>
+            </div>
+            <div class="xp-track" aria-hidden="true"><span id="xp-bar"></span></div>
+          </div>
+
+          <div class="companion" id="companion" data-mood="ready">
+            <div class="companion__avatar" aria-hidden="true">
+              <svg viewBox="0 0 100 100" class="companion__svg">
+                <circle cx="50" cy="52" r="40" class="companion__body"/>
+                <g id="companion-face"></g>
+              </svg>
+            </div>
+            <div class="companion__body-text">
+              <div class="companion__name-row">
+                <span class="companion__name" id="companion-name">Pip</span>
+                <button class="companion__rename" id="companion-rename" type="button" aria-label="Rename companion">edit</button>
+              </div>
+              <p class="companion__line" id="companion-line" aria-live="polite">Pip is ready when you are.</p>
+            </div>
+          </div>
+
+          <button class="game-button" id="game-button" type="button">Game · Level 2</button>
+        </div>
+
         <div class="controls" aria-label="List controls">
           <label class="range-control" for="worry-level">
             <span>Worry Level</span>
@@ -153,6 +197,43 @@
         <p class="contract-kicker">Secret appendix</p>
         <h2 id="friend-contract-title">Friend Contract</h2>
         <div class="contract-copy" id="friend-contract-copy"></div>
+      </section>
+    </div>
+    <div
+      class="game-modal"
+      id="game-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="game-title"
+      hidden
+    >
+      <button
+        class="game-modal__backdrop"
+        type="button"
+        data-game-close
+        aria-label="Close game"
+      ></button>
+      <section class="game-sheet">
+        <div class="game-sheet__head">
+          <div>
+            <p class="game-kicker">Unlocked mini-game</p>
+            <h2 id="game-title">Tiny Hop</h2>
+          </div>
+          <button class="game-close" id="game-close" type="button" aria-label="Close game">x</button>
+        </div>
+        <div class="game-scoreline">
+          <span>Score <strong id="game-score">0</strong></span>
+          <span>Best <strong id="game-best">0</strong></span>
+        </div>
+        <div class="game-stage">
+          <canvas id="game-canvas" width="640" height="280" aria-label="Tiny Hop game canvas"></canvas>
+          <div class="game-overlay" id="game-overlay">
+            <p class="game-overlay__result" data-game-result>Best 0</p>
+            <button class="game-start" id="game-start" type="button">Start</button>
+            <p class="game-hint">Space / tap to hop · dodge the blocks · grab the stars</p>
+          </div>
+        </div>
+        <p class="game-lock-note" id="game-lock-note" hidden></p>
       </section>
     </div>
     <div class="effect-layer" id="effect-layer" aria-hidden="true"></div>
